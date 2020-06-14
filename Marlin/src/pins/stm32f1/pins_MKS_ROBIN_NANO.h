@@ -52,7 +52,7 @@
 #define X_STOP_PIN                          PA15
 #define Y_STOP_PIN                          PA12
 #define Z_MIN_PIN                           PA11
-#define Z_MAX_PIN                           PC4
+//#define Z_MAX_PIN                           PC4
 
 #ifndef FIL_RUNOUT_PIN
   #define FIL_RUNOUT_PIN                    PA4   // MT_DET
@@ -77,9 +77,18 @@
 #define E0_STEP_PIN                         PD6
 #define E0_DIR_PIN                          PD3
 
-#define E1_ENABLE_PIN                       PA3
-#define E1_STEP_PIN                         PA6
-#define E1_DIR_PIN                          PA1
+//#define E1_ENABLE_PIN                     PA3  // nicht verwendet
+//#define E1_STEP_PIN                       PA6  // servo0_pin  (BL_touch)
+//#define E1_DIR_PIN                        PA1  // G led dran
+
+
+// LEDS (in configuration.h gesetzt)
+  // #define RGB_LED_R_PIN PA8
+  // #define RGB_LED_G_PIN PA1
+  // #define RGB_LED_B_PIN PA10
+
+// Servos
+#define SERVO0_PIN                          PA6   // eigentlich E1_Step_Pin Enable BLTOUCH pin
 
 //
 // Temperature Sensors
@@ -92,7 +101,7 @@
 // Heaters / Fans
 //
 #define HEATER_0_PIN                        PC3   // HEATER1
-#define HEATER_1_PIN                        PB0   // HEATER2
+//#define HEATER_1_PIN                        PB0   // HEATER2
 #define HEATER_BED_PIN                      PA0   // HOT BED
 
 #define FAN_PIN                             PB1   // FAN
@@ -106,16 +115,17 @@
 //
 // Misc. Functions
 //
-#define POWER_LOSS_PIN                      PA2   // PW_DET
-#define PS_ON_PIN                           PA3   // PW_OFF
+//#define POWER_LOSS_PIN                      PA2   // BL_touch schalter (Gesetzt in Confg.h)
+//#define PS_ON_PIN                           PA3   // PW_OFF
 
-#define LED_PIN                             PB2
+//#define LED_PIN                             PB2
 
 //
 // SD Card
 //
 #ifndef SDCARD_CONNECTION
   #define SDCARD_CONNECTION              ONBOARD
+  #define ONBOARD_SD_CS_PIN                 PC11
 #endif
 
 #define SDIO_SUPPORT
@@ -131,12 +141,17 @@
  * If the screen stays white, disable 'LCD_RESET_PIN'
  * to let the bootloader init the screen.
  */
-#if ENABLED(FSMC_GRAPHICAL_TFT)
-  #define FSMC_CS_PIN                       PD7   // NE4
-  #define FSMC_RS_PIN                       PD11  // A0
+#if ENABLED(FSMC_GRAPHICAL_TFT) || ENABLED(SAPPHIRE_GRAPHICAL_TFT)
+  #define DOGLCD_MOSI -1 // prevent redefine Conditionals_post.h
+  #define DOGLCD_SCK -1
+  #define FSMC_CS_PIN        PD7    // NE4
+  #define FSMC_RS_PIN        PD11   // A0
 
-  #define LCD_RESET_PIN                     PC6   // FSMC_RST
-  #define NO_LCD_REINIT                           // Suppress LCD re-initialization
+  //#define LCD_RESET_PIN      PC6    // FSMC_RST
+  #define LCD_USE_DMA_FSMC
+  #define FSMC_DMA_DEV DMA2
+  #define FSMC_DMA_CHANNEL DMA_CH5
+  //#define NO_LCD_REINIT             // Suppress LCD re-initialization
 
   #define LCD_BACKLIGHT_PIN                 PD13
 

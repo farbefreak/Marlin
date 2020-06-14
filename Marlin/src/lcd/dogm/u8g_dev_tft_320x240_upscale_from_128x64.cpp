@@ -106,31 +106,56 @@
 #define COLOR_AQUA        0x07FF  // #00FFFF
 
 #define COLOR_MAROON      0x7800  // #800000
-#define COLOR_GREEN       0x03E0  // #008000
+#define COLOR_GREEN       0x27E0  // #008000
 #define COLOR_NAVY        0x000F  // #000080
 #define COLOR_OLIVE       0x8400  // #808000
 #define COLOR_PURPLE      0x8010  // #800080
 #define COLOR_TEAL        0x0410  // #008080
-
 #define COLOR_ORANGE      0xFC00  // #FF7F00
 
-#ifndef TFT_MARLINUI_COLOR
+#define TFT_DISABLED_COLOR COLOR_DARK
+
+//Classic
+#if ENABLED (SAPPHIRE_GRAPHICAL_TFT_CLASSIC)
   #define TFT_MARLINUI_COLOR COLOR_WHITE
-#endif
-#ifndef TFT_MARLINBG_COLOR
+  #define TFT_MARLINBG_COLOR COLOR_NAVY
+  #define TFT_BTCANCEL_COLOR COLOR_WHITE
+  #define TFT_BTARROWS_COLOR COLOR_WHITE
+  #define TFT_BTOKMENU_COLOR COLOR_WHITE
+#elif ENABLED (SAPPHIRE_GRAPHICAL_TFT_BW)
+  // Black and White
+  #define TFT_MARLINUI_COLOR COLOR_WHITE
   #define TFT_MARLINBG_COLOR COLOR_BLACK
-#endif
-#ifndef TFT_DISABLED_COLOR
-  #define TFT_DISABLED_COLOR COLOR_DARK
-#endif
-#ifndef TFT_BTCANCEL_COLOR
+  #define TFT_BTCANCEL_COLOR COLOR_WHITE
+  #define TFT_BTARROWS_COLOR COLOR_WHITE
+  #define TFT_BTOKMENU_COLOR COLOR_WHITE
+#elif ENABLED (SAPPHIRE_GRAPHICAL_TFT_WB)
+  // White and Black
+  #define TFT_MARLINUI_COLOR COLOR_BLACK
+  #define TFT_MARLINBG_COLOR COLOR_WHITE
+  #define TFT_BTCANCEL_COLOR COLOR_BLACK
+  #define TFT_BTARROWS_COLOR COLOR_BLACK
+  #define TFT_BTOKMENU_COLOR COLOR_BLACK
+#elif ENABLED (SAPPHIRE_GRAPHICAL_TFT_WBC)
+  // White, Black and Colored Buttons
+  #define TFT_MARLINUI_COLOR COLOR_BLACK
+  #define TFT_MARLINBG_COLOR COLOR_WHITE
   #define TFT_BTCANCEL_COLOR COLOR_RED
-#endif
-#ifndef TFT_BTARROWS_COLOR
   #define TFT_BTARROWS_COLOR COLOR_BLUE
-#endif
-#ifndef TFT_BTOKMENU_COLOR
-  #define TFT_BTOKMENU_COLOR COLOR_RED
+  #define TFT_BTOKMENU_COLOR COLOR_GREEN
+#elif ENABLED (SAPPHIRE_GRAPHICAL_TFT_CUSTOM)
+  #define TFT_MARLINUI_COLOR COLOR_CUSTOM_0
+  #define TFT_MARLINBG_COLOR COLOR_CUSTOM_1
+  #define TFT_BTCANCEL_COLOR COLOR_CUSTOM_2
+  #define TFT_BTARROWS_COLOR COLOR_CUSTOM_3
+  #define TFT_BTOKMENU_COLOR COLOR_CUSTOM_4
+#else //SAPPHIRE_GRAPHICAL_TFT_BWC
+  // Black, White and Colored Buttons (DEFAULT)
+  #define TFT_MARLINUI_COLOR COLOR_WHITE
+  #define TFT_MARLINBG_COLOR COLOR_BLACK
+  #define TFT_BTCANCEL_COLOR COLOR_RED
+  #define TFT_BTARROWS_COLOR COLOR_BLUE
+  #define TFT_BTOKMENU_COLOR COLOR_GREEN
 #endif
 
 static uint32_t lcd_id = 0;
@@ -619,7 +644,7 @@ uint8_t u8g_dev_tft_320x240_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
           setWindow = setWindow_ili9328;
           break;
         case 0x9341:   // ILI9341
-        case 0x8066:   // Anycubic / TronXY TFTs (480x320)
+        case 0x8066:   // ILI9341 Anycubic / TronXY TFTs (480x320)  
           #ifdef LCD_USE_DMA_FSMC
             writeEscSequence(ili9341_init);
           #else
@@ -658,6 +683,7 @@ uint8_t u8g_dev_tft_320x240_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
 
       // Bottom buttons
       #if ENABLED(TOUCH_BUTTONS)
+
         setWindow(u8g, dev, BUTTOND_X_LO, BUTTON_Y_LO,  BUTTOND_X_HI, BUTTON_Y_HI);
         drawImage(buttonD, u8g, dev, 32, 20, TFT_BTCANCEL_COLOR);
 
